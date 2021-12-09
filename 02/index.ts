@@ -6,21 +6,29 @@ function parseInstruction(instruction: string): [string, number] {
   return [split[0], parseInt(split[1], 10)];
 }
 
-function derivePosition(): [number, number] {
+type Position = {
+  forward: number;
+  depth: number;
+};
+
+function derivePosition(): Position {
   const instructions = getStrings().map(parseInstruction);
 
-  const position: [horizontalPosition: number, depth: number] = [0, 0];
+  const position: Position = {
+    forward: 0,
+    depth: 0,
+  };
 
   for (const [instruction, value] of instructions) {
     switch (instruction) {
       case "forward":
-        position[0] += value;
+        position.forward += value;
         break;
       case "down":
-        position[1] += value;
+        position.depth += value;
         break;
       case "up":
-        position[1] -= value;
+        position.depth -= value;
         break;
     }
   }
@@ -30,4 +38,43 @@ function derivePosition(): [number, number] {
 
 const position = derivePosition();
 
-console.log("Final multiplied position value: ", position[0] * position[1]);
+console.log(
+  "Final multiplied position value: ",
+  position.depth * position.forward
+);
+
+type AimedPosition = Position & { aim: number };
+
+function deriveAimedPosition(): AimedPosition {
+  const instructions = getStrings().map(parseInstruction);
+
+  const position: AimedPosition = {
+    forward: 0,
+    depth: 0,
+    aim: 0,
+  };
+
+  for (const [instruction, value] of instructions) {
+    switch (instruction) {
+      case "forward":
+        position.forward += value;
+        position.depth += value * position.aim;
+        break;
+      case "down":
+        position.aim += value;
+        break;
+      case "up":
+        position.aim -= value;
+        break;
+    }
+  }
+
+  return position;
+}
+
+const aimedPosition = deriveAimedPosition();
+
+console.log(
+  "Final multiplied aimed position value: ",
+  aimedPosition.depth * aimedPosition.forward
+);
