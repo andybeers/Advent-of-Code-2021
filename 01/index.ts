@@ -21,7 +21,7 @@ function getDepthSumIncreaseCount(depths: number[]): number {
   let currentDepthSum = 0;
 
   for (let i = 0; i < depths.length - 2; i++) {
-    currentDepthSum = depths[i] + depths[i + 1] + depths[i + 2];
+    currentDepthSum = sum(depths.slice(i, i + 3));
     if (previousDepthSum && currentDepthSum > previousDepthSum) {
       depthIncreaseCount++;
     }
